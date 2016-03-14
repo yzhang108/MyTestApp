@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN"
+        "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <script language="JavaScript" src="test.js" ></script>
+    <script type="text/javascript">
+       function showMemory() {
+     var memorySize=getMemorySize();
+    alert(memorySize);
+
+   }
+
+    </script>
+
+    <title>测试H5交互</title>
+</head>
+
+<body style="background:#EFEEF4;font-size:14px;">
+
+<p style="text-align:center;margin:0 auto">测试拨打电话</p>
+<a href="tel:13810492896">拨号</a>
+<br/>
+<a href="sms:13810492896">发短信</a>
+<br/>
+<br/>
+<div data-role="page" id="test">
+    <div data-role="content">
+        <div id="btnTest">
+            <button onclick="showAlert();">測試彈出窗口</button>
+        </div>
+    </div>
+</div>
+<br/>
+<br/>
+
+<input value="打电话" type="button" onClick="phoneCall();"/><br>
+<br/>
+<br/>
+<p>
+    <button onclick="robot.callAndroidMethod();">点击我调用android 方法</button>
+</p>
+
+<p>
+    <button onclick="showResult();">callnative method to test basic datatype through javascriptInterface</button>
+</p>
+
+
+</p>
+
+
+</body>
+
+</html>
