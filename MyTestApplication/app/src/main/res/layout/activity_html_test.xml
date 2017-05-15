@@ -7,10 +7,18 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.mytestapplication.HtmlTestActivity">
+    tools:context=".ui.activity.HtmlTestActivity">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ceshiceshi" />
+
     <WebView
         android:id="@+id/wv_test"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_title"></WebView>
 
 </RelativeLayout>

@@ -1,33 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbars="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.mytestapplication.MainActivity"
+    tools:context=".ui.activity.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:id="@+id/tv_welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="欢迎来到我的测试程序!" />
-    <Button
-        android:id="@+id/bt_openApp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_welcome"
-        android:text="打开政企项目"/>
-    <Button
-        android:id="@+id/bt_html5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HTML5测试"
-        android:layout_below="@id/bt_openApp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tv_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="欢迎来到我的测试程序!" />
+
+        <Button
+            android:id="@+id/bt_openApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_welcome"
+            android:text="打开政企项目" />
+
+        <Button
+            android:id="@+id/bt_html5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_openApp"
+            android:text="HTML5测试" />
+
+        <Button
+            android:id="@+id/bt_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_html5"
+            android:text="创建推送消息" />
+
+        <Button
+            android:id="@+id/bt_rejected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_notification"
+            android:text="反射实验" />
+
+        <Button
+            android:id="@+id/bt_memory_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_notification"
+            android:text="内存测试" />
+
+        <Button
+            android:id="@+id/bt_copy_db"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_memory_test"
+            android:text="拷贝数据库" />
+
+        <Button
+            android:id="@+id/bt_test_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_copy_db"
+            android:text="测试TreeMap与HashMap" />
+
+        <Button
+            android:id="@+id/tablayout_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_test_map"
+            android:text="TabLayout+Viewpage测试" />
+
+        <Button
+            android:id="@+id/bt_listview_refresh_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tablayout_test"
+            android:text="listview下拉图片放大" />
+
+        <Button
+            android:id="@+id/bt_test_scrollto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_listview_refresh_pic"
+            android:text="测试scrollto方法" />
+
+        <Button
+            android:id="@+id/bt_test_databinding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_test_scrollto"
+            android:text="Data_Binding" />
+
+        <Button
+            android:id="@+id/bt_coordinatorylayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bt_test_databinding"
+            android:text="coordinatorylayout" />
+
+    </RelativeLayout>
+</ScrollView>

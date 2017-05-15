@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:background="@android:color/holo_green_light" >
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/holo_blue_dark"
+            android:textSize="20sp"
+            android:text="SCROLL" />
+        <ImageView
+            android:id="@+id/iv_test"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/story_member_center_bg"
+            android:layout_alignParentTop="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button_scroll1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SCROLL_TO" />
+
+        <Button
+            android:id="@+id/button_scroll2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zoom" />
+
+        <Button
+            android:id="@+id/button_scroll3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="复位" />
+    </LinearLayout>
+
+</LinearLayout>

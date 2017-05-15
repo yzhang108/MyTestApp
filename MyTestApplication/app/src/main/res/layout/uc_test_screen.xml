@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<com.example.mytestapplication.widge.uc.UCHeadView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/dp_200">-->
+
+        <!--<include-->
+            <!--layout="@layout/uc_header_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+    <!--</com.example.mytestapplication.widge.uc.UCHeadView>-->
+
+    <include
+        android:id="@+id/content_view"
+        layout="@layout/uc_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include
+        android:id="@+id/content_title_view"
+        layout="@layout/uc_content_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</android.support.design.widget.CoordinatorLayout>

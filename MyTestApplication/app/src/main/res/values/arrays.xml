@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="menu_item">
+        <item> 打开政企项目</item>
+        <item> HTML5测试</item>
+        <item> 创建推送消息</item>
+        <item> 反射实验</item>
+        <item> 内存测试</item>
+        <item> 拷贝数据库</item>
+        <item> 测试TreeMap与HashMap</item>
+        <item> TabLayout+Viewpage测试</item>
+        <item>listview下拉图片放大</item>
+        <item>测试scrollto方法</item>
+        <item>databinding</item>
+        <item>知乎缩进顶部和底部模仿</item>
+        <item>SwipeRefreshLayout使用</item>
+        <item>仿微博话题展示</item>
+        <item>ToolBar自定义菜单</item>
+        <item>title栏渐变透明</item>
+        <item>仿UC折叠效果</item>
+        <item>绘画和动画</item>
+    </string-array>
+    <string-array name="calendar_week">
+        <item>日</item>
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+    </string-array>
+</resources>

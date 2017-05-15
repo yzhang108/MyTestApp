@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:id="@+id/rl_selected_time"
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+
+        <TextView
+            android:id="@+id/tv_year_and_month_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="2017年3月" />
+
+        <TextView
+            android:id="@+id/tv_today_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="今天" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_week_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/calendary_row_1_height"
+        android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
+
+    <FrameLayout
+        android:id="@+id/frame_days"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpage_month_days"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/calendar_row_6_height"
+            android:background="@android:color/white"></android.support.v4.view.ViewPager>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpage_week_days"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/calendary_row_1_height"
+            android:background="@android:color/white"></android.support.v4.view.ViewPager>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/llyt_tag"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+
+        <TextView
+            android:id="@+id/tv_usual_tag"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="考勤正常" />
+
+        <TextView
+            android:id="@+id/tv_unusual_tag"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="考勤异常" />
+
+    </LinearLayout>
+</merge>
+

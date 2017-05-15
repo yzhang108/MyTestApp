@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!--toolbar-->
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="知乎日报"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_behavior"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+        <!--底部操作栏-->
+        <LinearLayout
+            android:id="@+id/llyt_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/colorPrimary"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            app:layout_behavior="com.example.mytestapplication.widge.behavior.FooterBehaviorDependAppBar">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/add"
+                android:drawablePadding="5dp"
+                android:text="添加你的评论"
+                android:textColor="@android:color/white" />
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="29dp"
+                android:src="@mipmap/medal_gold" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_add_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/light_transport"
+            android:gravity="center"
+            android:text="蒙板出现"
+            android:visibility="gone" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="70dp"
+            android:layout_marginRight="20dp"
+            android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="#ff0077d9"
+            app:borderWidth="0dp"
+            app:elevation="6dp"
+            app:layout_anchor="@id/rv_behavior"
+            app:layout_anchorGravity="bottom|right"
+            app:layout_behavior="com.example.mytestapplication.widge.behavior.ScrollAwareFABBehavior"
+            app:pressedTranslationZ="12dp"
+            app:rippleColor="#33728dff" />
+
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="70dp"
+            android:background="@drawable/fab"
+            android:src="@mipmap/tree" />
+
+    </android.support.design.widget.CoordinatorLayout>
+</FrameLayout>
+
+

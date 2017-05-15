@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <import type="android.view.View"/>
+        <import type="java.util.List"/>
+        <import type="com.example.mytestapplication.model.databinding.UserInfo"/>
+        <variable name="user" type="UserInfo"/>
+      <!--  <variable name="userList" type="List<UserInfo>"/>-->
+
+        <!--<variable
+            name="handlers"
+            type="com.example.mytestapplication.model.databinding.EventHandler"/>-->
+    </data>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp">
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{user.firstName}"
+            android:textSize="20dp"
+            android:gravity="center_horizontal"/>
+        <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{user.lastName}"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="成人"
+            android:gravity="center_horizontal"
+            android:visibility="@{user.isAult?View.VISIBLE:View.INVISIBLE}"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="提交"
+            android:onClick="@{user::submit}"
+            />
+    </LinearLayout>
+</layout>
