@@ -128,6 +128,24 @@ public class MyCalendaryView extends LinearLayout {
         weekRecyclerView.setAdapter(titleAdapter);
     }
 
+    private void refreshWeekViewWidthSelectedDate(){
+        int weekDuration = CalendaryUtil.getWeeksAgo(initDate, selectedDate);
+        int position = weekPageAdapter.getStartPos() + weekDuration;
+        if (weekPageAdapter != null) {
+            weekPageAdapter.changeStartDate(selectedDate);
+        }
+        weekVP.setCurrentItem(position, false);
+    }
+    private void refreshMonthViewWidthSelectedDate(){
+        int monthDuration = CalendaryUtil.getMonthsAgo(initDate, selectedDate);
+        int monthPosition = monthPageAdapter.getStartPos() + monthDuration;
+        if (monthPageAdapter != null) {
+            monthPageAdapter.changeStartDate(selectedDate);
+        }
+        if (monthPosition != monthVP.getCurrentItem()) {
+            monthVP.setCurrentItem(monthPosition, false);
+        }
+    }
 
     private void initListener() {
         onPickMonthDayListener = new OnCalendarClickListener() {
@@ -137,12 +155,7 @@ public class MyCalendaryView extends LinearLayout {
                 int monthDuration = CalendaryUtil.getMonthsAgo(selectedDate, date);
                 monthPageAdapter.changeStartDate(date);
                 setSelectedDate(date);
-                int weekDuration = CalendaryUtil.getWeeksAgo(initDate, date);
-                int position = weekPageAdapter.getStartPos() + weekDuration;
-                if (weekPageAdapter != null) {
-                    weekPageAdapter.changeStartDate(date);
-                }
-                weekVP.setCurrentItem(position, false);
+                refreshWeekViewWidthSelectedDate();
                 if (monthDuration != 0) {
                     int mposition = monthVP.getCurrentItem() + monthDuration;
 //                    AppLogger.e("monthDuration==" + monthDuration + ",mposition=" + mposition);
@@ -156,14 +169,7 @@ public class MyCalendaryView extends LinearLayout {
             public void onDatePicked(LocalDate date) {
                 setSelectedDate(date);
                 weekPageAdapter.changeStartDate(date);
-                int monthDuration = CalendaryUtil.getMonthsAgo(initDate, date);
-                int monthPosition = monthPageAdapter.getStartPos() + monthDuration;
-                if (monthPageAdapter != null) {
-                    monthPageAdapter.changeStartDate(date);
-                }
-                if (monthPosition != monthVP.getCurrentItem()) {
-                    monthVP.setCurrentItem(monthPosition, false);
-                }
+                refreshMonthViewWidthSelectedDate();
 
             }
         };
@@ -192,16 +198,8 @@ public class MyCalendaryView extends LinearLayout {
                         autoScrollWhenRowNumChange();
                         return;
                     }
-                    int monthDuration = CalendaryUtil.getMonthsAgo(initDate, date);
-                    int monthPosition = monthPageAdapter.getStartPos() + monthDuration;
-//                    AppLogger.e("monthPosition="+monthPosition);
-                    if (monthPageAdapter != null) {
-                        monthPageAdapter.changeStartDate(date);
-                    }
-                    if (monthPosition != monthVP.getCurrentItem()) {
-                        monthVP.setCurrentItem(monthPosition, false);
-                    }
                     setSelectedDate(date);
+                    refreshMonthViewWidthSelectedDate();
                     autoScrollWhenRowNumChange();
                 }
             }
@@ -239,14 +237,7 @@ public class MyCalendaryView extends LinearLayout {
                         autoScrollWhenRowNumChange();
                         return;
                     }
-                    int weekDuration = CalendaryUtil.getWeeksAgo(initDate, date);
-                    int weekPosition = weekPageAdapter.getStartPos() + weekDuration;
-                    if (weekPageAdapter != null) {
-                        weekPageAdapter.changeStartDate(date);
-                    }
-                    if (weekVP.getCurrentItem() != weekPosition) {
-                        weekVP.setCurrentItem(weekPosition, false);
-                    }
+                    refreshWeekViewWidthSelectedDate();
                     setSelectedDate(date);
                     autoScrollWhenRowNumChange();
                 }
