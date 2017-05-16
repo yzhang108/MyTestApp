@@ -34,7 +34,7 @@
     <FrameLayout
         android:id="@+id/frame_days"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/calendar_row_6_height">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpage_month_days"

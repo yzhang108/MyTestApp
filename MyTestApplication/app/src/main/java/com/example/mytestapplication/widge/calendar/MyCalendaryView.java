@@ -90,22 +90,18 @@ public class MyCalendaryView extends LinearLayout {
 
         initDate = new LocalDate(2017, 5, 31);
         setSelectedDate(initDate);
+        mCurrentRowsIsSix = CalendaryUtil.getMonthRows(selectedDate.getYear(), selectedDate.getMonthOfYear()) == 6;
+
         initListener();
         initData();
-        tvToday.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                monthVP.setCurrentItem(monthVP.getCurrentItem()+20,false);
-            }
-        });
     }
 
 
     private void setSelectedDate(LocalDate date) {
         this.selectedDate = date;
         showCurrDate(selectedDate);
-
-
+        currentSelectDayRowNum=CalendaryUtil.getWeekRow(selectedDate.getYear(),selectedDate.getMonthOfYear(),selectedDate.getDayOfMonth());
+        AppLogger.e("currentSelectDayRowNum="+currentSelectDayRowNum);
     }
 
 
@@ -188,15 +184,16 @@ public class MyCalendaryView extends LinearLayout {
             @Override
             public void onPageSelected(int position) {
                 LocalDate date = weekPageAdapter.getShowDate(position);
-                AppLogger.d("weekadapter position="+position+",mSelectedDate="+selectedDate.toString("yyyy-MM-dd"));
+//                AppLogger.d("weekadapter position="+position+",mSelectedDate="+selectedDate.toString("yyyy-MM-dd"));
                 if (date != null) {
-                    AppLogger.d("weekadapter ,date="+date.toString("yyyy-MM-dd"));
-                    if(date.isEqual(selectedDate)) {
-                        AppLogger.d("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//                    AppLogger.d("weekadapter ,date="+date.toString("yyyy-MM-dd"));
+                    if (date.isEqual(selectedDate)) {
+//                        AppLogger.d("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                        autoScrollWhenRowNumChange();
                         return;
                     }
                     int monthDuration = CalendaryUtil.getMonthsAgo(initDate, date);
-                    int monthPosition= monthPageAdapter.getStartPos() + monthDuration;
+                    int monthPosition = monthPageAdapter.getStartPos() + monthDuration;
 //                    AppLogger.e("monthPosition="+monthPosition);
                     if (monthPageAdapter != null) {
                         monthPageAdapter.changeStartDate(date);
@@ -205,6 +202,7 @@ public class MyCalendaryView extends LinearLayout {
                         monthVP.setCurrentItem(monthPosition, false);
                     }
                     setSelectedDate(date);
+                    autoScrollWhenRowNumChange();
                 }
             }
 
@@ -221,7 +219,7 @@ public class MyCalendaryView extends LinearLayout {
      */
     private void initMonthDate() {
         int maxHeight = rowHegiht * ROW_SIZE;
-//        AppLogger.e("maxHeight=" + maxHeight);
+        AppLogger.e("maxHeight=" + maxHeight);
         monthPageAdapter = new MonthPageAdapter(maxHeight, initDate, onPickMonthDayListener);
         monthVP.setAdapter(monthPageAdapter);
         monthVP.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -232,11 +230,13 @@ public class MyCalendaryView extends LinearLayout {
 
             @Override
             public void onPageSelected(int position) {
+                monthPageAdapter.printHeight();
                 LocalDate date = monthPageAdapter.getShowDate(position);
-                AppLogger.d("monthadapter, position==" + position+",date="+date+",selectedDate="+selectedDate);
+//                AppLogger.d("monthadapter, position==" + position+",date="+date+",selectedDate="+selectedDate);
                 if (date != null) {
-                    if(date.isEqual(selectedDate)) {
-                        AppLogger.d("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                    if (date.isEqual(selectedDate)) {
+//                        AppLogger.d("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                        autoScrollWhenRowNumChange();
                         return;
                     }
                     int weekDuration = CalendaryUtil.getWeeksAgo(initDate, date);
@@ -244,11 +244,11 @@ public class MyCalendaryView extends LinearLayout {
                     if (weekPageAdapter != null) {
                         weekPageAdapter.changeStartDate(date);
                     }
-                    if(weekVP.getCurrentItem()!=weekPosition) {
+                    if (weekVP.getCurrentItem() != weekPosition) {
                         weekVP.setCurrentItem(weekPosition, false);
                     }
-
-                    showCurrDate(date);
+                    setSelectedDate(date);
+                    autoScrollWhenRowNumChange();
                 }
             }
 
@@ -272,7 +272,7 @@ public class MyCalendaryView extends LinearLayout {
         int height = MeasureSpec.getSize(heightMeasureSpec);
 //        AppLogger.e("childCount=" + childCount+",height="+height+",getHeight="+getHeight());
         if (childCount != 5) {
-            throw new IllegalStateException("calendarview layout must have exactly 5 children!");
+            throw new IllegalStateException("calendarview layout must have exactly 1 children!");
         }
         int selectTimeHeight = getChildAt(0).getLayoutParams().height;
         int weekbarHeight = getChildAt(1).getLayoutParams().height;
@@ -379,7 +379,7 @@ public class MyCalendaryView extends LinearLayout {
 
         float scrollY = dragViewScrollY / (mCurrentRowsIsSix ? 5.0f : 4.0f);
         float canMonthViewScrollY = getMonthViewCanUpScope();
-        float monthViewTransY = monthVP.getY() - Math.min(scrollY * (currentSelectDayRowNum - 1), canMonthViewScrollY);
+        float monthViewTransY = monthVP.getY() - Math.min(scrollY * (currentSelectDayRowNum ), canMonthViewScrollY);
         monthVP.setY(monthViewTransY);
 
     }
@@ -392,7 +392,7 @@ public class MyCalendaryView extends LinearLayout {
 
         float scrollY = dragviewScrollY / (mCurrentRowsIsSix ? 5.0f : 4.0f);
         float canMonthViewScrollY = getMonthViewCanDownScope();
-        float monthViewTransY = monthVP.getY() + Math.min(scrollY * (currentSelectDayRowNum - 1), canMonthViewScrollY);
+        float monthViewTransY = monthVP.getY() + Math.min(scrollY * (currentSelectDayRowNum ), canMonthViewScrollY);
         monthVP.setY(monthViewTransY);
     }
 
@@ -441,11 +441,12 @@ public class MyCalendaryView extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+        AppLogger.e("onLayout,monthVP.getHeight()="+monthVP.getHeight()+",weekVP.getHeight()="+weekVP.getHeight()+",frame.height="+mDayFrameLayout.getHeight());
         setState(mState);
     }
 
     private int compulateMothViewMinTop() {
-        return -rowHegiht * (currentSelectDayRowNum - 1);
+        return -rowHegiht * (currentSelectDayRowNum );
     }
 
     private int compulateMothViewMaxTop() {
@@ -457,7 +458,8 @@ public class MyCalendaryView extends LinearLayout {
     }
 
     private int compulateDragViewMaxTop() {
-        return mDayFrameLayout.getTop() + monthVP.getHeight();
+//        return mDayFrameLayout.getTop() + monthVP.getHeight();
+        return mDayFrameLayout.getTop() + rowHegiht*(mCurrentRowsIsSix?6:5);
     }
 
     private boolean checkDragViewCanScrollUp() {
@@ -541,5 +543,21 @@ public class MyCalendaryView extends LinearLayout {
             });
             mDragView.startAnimation(calendarViewMoveAnimation);
         }
+    }
+
+    private void autoScrollWhenRowNumChange() {
+        int rows = CalendaryUtil.getMonthRows(selectedDate.getYear(), selectedDate.getMonthOfYear());
+        if (mState == CalendarState.OPEN) {
+            if (mCurrentRowsIsSix && rows != 6) {
+                //向上滑动
+                AutoMoveAnimation animation = new AutoMoveAnimation(mDragView, -rowHegiht, 200, 1.5f);
+                mDragView.startAnimation(animation);
+            } else if (!mCurrentRowsIsSix && rows != 5) {
+//            想下滑动
+                AutoMoveAnimation animation = new AutoMoveAnimation(mDragView, rowHegiht, 200, 1.5f);
+                mDragView.startAnimation(animation);
+            }
+        }
+        mCurrentRowsIsSix = (rows == 6);
     }
 }

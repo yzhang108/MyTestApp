@@ -6,8 +6,6 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 
-import com.example.mytestapplication.utils.AppLogger;
-
 /**
  * Created by 张艳 on 2017/5/11.
  */
@@ -28,7 +26,6 @@ public class AutoMoveAnimation extends Animation {
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
         super.applyTransformation(interpolatedTime, t);
-        AppLogger.e("interpolatedTime*mDistance="+interpolatedTime*mDistance+",mDistance="+mDistance+",interpolatedTime="+interpolatedTime);
         mView.setY(mPositionY+interpolatedTime*mDistance);
     }
 }

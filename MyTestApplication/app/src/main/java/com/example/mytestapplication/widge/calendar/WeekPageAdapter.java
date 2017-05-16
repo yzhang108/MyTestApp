@@ -32,7 +32,7 @@ public class WeekPageAdapter extends CalendarBasePageAdapter {
         if (monthViews.get(pos) == null) {
 //            AppLogger.e("1111111");
             RecyclerView recyclerView = new RecyclerView(container.getContext());
-            recyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeight));
+            recyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mViewHeight));
             recyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), ONE_WEEK_DAYS));
             WeekDayRVAdapter textRVAdapter = new WeekDayRVAdapter(recyclerView.getContext(), dateShowDatas, desTime, onCalendarClickListener);
             recyclerView.setAdapter(textRVAdapter);

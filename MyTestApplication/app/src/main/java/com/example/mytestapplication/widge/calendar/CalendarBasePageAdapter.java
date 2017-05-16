@@ -18,14 +18,14 @@ public class CalendarBasePageAdapter extends PagerAdapter{
     protected SparseArray<RecyclerView> monthViews = new SparseArray<>();
     protected SparseArray<TextRVAdapter> monthAdapter = new SparseArray<>();
     public final static int ITEM_COUNT = 3;
-    protected int viewHeight;
+    protected int mViewHeight;
     protected LocalDate mStartTime;
     protected int startPos = 0;
     protected OnCalendarClickListener onCalendarClickListener;
     private final static int PAGE_COUNT=5000;
 
     public CalendarBasePageAdapter(int viewHeight, LocalDate mStartTime,OnCalendarClickListener listener) {
-        this.viewHeight = viewHeight;
+        this.mViewHeight = viewHeight;
         this.mStartTime = mStartTime;
         startPos = PAGE_COUNT / 2;
         this.onCalendarClickListener=listener;
