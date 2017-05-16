@@ -19,18 +19,16 @@ public class WeekDayRVAdapter extends TextRVAdapter {
         super(context, dateShowDatas, date, dateClick);
     }
 
-    public void changeSelectedDate(int dayOfWeek){
-        if(mSelectedDate!=null){
-            int weedDay=mSelectedDate.getDayOfWeek();
-            if(weedDay==7)
-                weedDay=0;
-            if(weedDay==dayOfWeek)
+    public void changeSelectedDate(int dayOfWeek) {
+        if (mSelectedDate != null) {
+            int weedDay = mSelectedDate.getDayOfWeek();
+            if (weedDay == 7)
+                weedDay = 0;
+            if (weedDay == dayOfWeek)
                 return;
         }
-        if(dateShowDatas!=null && dateShowDatas.size()>dayOfWeek){
-            mSelectedDate=dateShowDatas.get(dayOfWeek).date;
+        if (dateShowDatas != null && dateShowDatas.size() > dayOfWeek) {
+            mSelectedDate = dateShowDatas.get(dayOfWeek).date;
         }
-        notifyDataSetChanged();
-//        AppLogger.e("mSelectedDate="+mSelectedDate.toString("yyyy-MM-dd"));
     }
 }

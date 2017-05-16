@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.mytestapplication.R;
-import com.example.mytestapplication.utils.AppLogger;
 
 import org.joda.time.LocalDate;
 
@@ -56,7 +55,7 @@ public class MyCalendaryView extends LinearLayout {
     private boolean isShowTag = false;
     private int mAutoScrollDistance;
     private boolean mCurrentRowsIsSix = false;
-    private int currentSelectDayRowNum = 2;
+    private int currentSelectDayRowNum = 1;
     private LocalDate initDate;//初始化时系统默认选中的时间,是整个时间计算的参照物，相当于坐标元点
     private LocalDate selectedDate;
     private OnCalendarClickListener onPickWeekDayListener, onPickMonthDayListener;
@@ -100,8 +99,7 @@ public class MyCalendaryView extends LinearLayout {
     private void setSelectedDate(LocalDate date) {
         this.selectedDate = date;
         showCurrDate(selectedDate);
-        currentSelectDayRowNum=CalendaryUtil.getWeekRow(selectedDate.getYear(),selectedDate.getMonthOfYear(),selectedDate.getDayOfMonth());
-        AppLogger.e("currentSelectDayRowNum="+currentSelectDayRowNum);
+        currentSelectDayRowNum = CalendaryUtil.getWeekRow(selectedDate.getYear(), selectedDate.getMonthOfYear(), selectedDate.getDayOfMonth());
     }
 
 
@@ -128,15 +126,20 @@ public class MyCalendaryView extends LinearLayout {
         weekRecyclerView.setAdapter(titleAdapter);
     }
 
-    private void refreshWeekViewWidthSelectedDate(){
+    private void refreshWeekViewWidthSelectedDate() {
         int weekDuration = CalendaryUtil.getWeeksAgo(initDate, selectedDate);
         int position = weekPageAdapter.getStartPos() + weekDuration;
         if (weekPageAdapter != null) {
             weekPageAdapter.changeStartDate(selectedDate);
         }
-        weekVP.setCurrentItem(position, false);
+        if (position != weekVP.getCurrentItem()) {
+            weekVP.setCurrentItem(position, false);
+        } else {
+            weekPageAdapter.notifyCurrentItem(weekVP.getCurrentItem());
+        }
     }
-    private void refreshMonthViewWidthSelectedDate(){
+
+    private void refreshMonthViewWidthSelectedDate() {
         int monthDuration = CalendaryUtil.getMonthsAgo(initDate, selectedDate);
         int monthPosition = monthPageAdapter.getStartPos() + monthDuration;
         if (monthPageAdapter != null) {
@@ -144,6 +147,8 @@ public class MyCalendaryView extends LinearLayout {
         }
         if (monthPosition != monthVP.getCurrentItem()) {
             monthVP.setCurrentItem(monthPosition, false);
+        } else {
+            monthPageAdapter.notifyCurrentItem(monthVP.getCurrentItem());
         }
     }
 
@@ -151,14 +156,11 @@ public class MyCalendaryView extends LinearLayout {
         onPickMonthDayListener = new OnCalendarClickListener() {
             @Override
             public void onDatePicked(LocalDate date) {
-//                AppLogger.d("fromDate="+selectedDate.toString("yyyy-MM-dd")+",toDate="+date.toString("yyyy-MM-dd"));
                 int monthDuration = CalendaryUtil.getMonthsAgo(selectedDate, date);
                 monthPageAdapter.changeStartDate(date);
                 setSelectedDate(date);
-                refreshWeekViewWidthSelectedDate();
                 if (monthDuration != 0) {
                     int mposition = monthVP.getCurrentItem() + monthDuration;
-//                    AppLogger.e("monthDuration==" + monthDuration + ",mposition=" + mposition);
                     monthVP.setCurrentItem(mposition, true);
                 }
 
@@ -169,8 +171,6 @@ public class MyCalendaryView extends LinearLayout {
             public void onDatePicked(LocalDate date) {
                 setSelectedDate(date);
                 weekPageAdapter.changeStartDate(date);
-                refreshMonthViewWidthSelectedDate();
-
             }
         };
     }
@@ -189,17 +189,14 @@ public class MyCalendaryView extends LinearLayout {
 
             @Override
             public void onPageSelected(int position) {
+                weekPageAdapter.notifyCurrentItem(position);
                 LocalDate date = weekPageAdapter.getShowDate(position);
-//                AppLogger.d("weekadapter position="+position+",mSelectedDate="+selectedDate.toString("yyyy-MM-dd"));
                 if (date != null) {
-//                    AppLogger.d("weekadapter ,date="+date.toString("yyyy-MM-dd"));
                     if (date.isEqual(selectedDate)) {
-//                        AppLogger.d("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                         autoScrollWhenRowNumChange();
                         return;
                     }
                     setSelectedDate(date);
-                    refreshMonthViewWidthSelectedDate();
                     autoScrollWhenRowNumChange();
                 }
             }
@@ -217,7 +214,6 @@ public class MyCalendaryView extends LinearLayout {
      */
     private void initMonthDate() {
         int maxHeight = rowHegiht * ROW_SIZE;
-        AppLogger.e("maxHeight=" + maxHeight);
         monthPageAdapter = new MonthPageAdapter(maxHeight, initDate, onPickMonthDayListener);
         monthVP.setAdapter(monthPageAdapter);
         monthVP.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -228,16 +224,13 @@ public class MyCalendaryView extends LinearLayout {
 
             @Override
             public void onPageSelected(int position) {
-                monthPageAdapter.printHeight();
+                monthPageAdapter.notifyCurrentItem(position);
                 LocalDate date = monthPageAdapter.getShowDate(position);
-//                AppLogger.d("monthadapter, position==" + position+",date="+date+",selectedDate="+selectedDate);
                 if (date != null) {
                     if (date.isEqual(selectedDate)) {
-//                        AppLogger.d("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                         autoScrollWhenRowNumChange();
                         return;
                     }
-                    refreshWeekViewWidthSelectedDate();
                     setSelectedDate(date);
                     autoScrollWhenRowNumChange();
                 }
@@ -261,7 +254,6 @@ public class MyCalendaryView extends LinearLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int childCount = getChildCount();
         int height = MeasureSpec.getSize(heightMeasureSpec);
-//        AppLogger.e("childCount=" + childCount+",height="+height+",getHeight="+getHeight());
         if (childCount != 5) {
             throw new IllegalStateException("calendarview layout must have exactly 1 children!");
         }
@@ -307,11 +299,16 @@ public class MyCalendaryView extends LinearLayout {
             case ACTION_DOWN:
                 mDownPosition[0] = event.getRawX();
                 mDownPosition[1] = event.getRawY();
-//                AppLogger.i("mDownPosition[0]=" + mDownPosition[0] + ",mDownPosition[1]=" + mDownPosition[1]);
 
                 return true;
             case ACTION_MOVE:
-//                Log.i("ScheduleLayout", "onTouchEvent  ACTION_MOVE");
+                if (!mIsScrolling) {
+                    if (mState == CalendarState.OPEN) {
+                        refreshWeekViewWidthSelectedDate();
+                    } else {
+                        refreshMonthViewWidthSelectedDate();
+                    }
+                }
                 mIsScrolling = true;
                 weekVP.setVisibility(INVISIBLE);
                 float distance = event.getRawY() - mDownPosition[1];
@@ -321,9 +318,7 @@ public class MyCalendaryView extends LinearLayout {
                 mDownPosition[1] = event.getRawY();
                 return true;
             case MotionEvent.ACTION_UP:
-//                Log.i("ScheduleLayout", "onTouchEvent  ACTION_UP");
             case MotionEvent.ACTION_CANCEL:
-//                Log.i("ScheduleLayout", "onTouchEvent  ACTION_CANCEL");
                 finishScroll();
                 mDownPosition[0] = 0;
                 mDownPosition[1] = 0;
@@ -344,7 +339,6 @@ public class MyCalendaryView extends LinearLayout {
                 float y = ev.getRawY();
                 float distanceX = Math.abs(x - mDownPosition[0]);
                 float distanceY = Math.abs(y - mDownPosition[1]);
-//                AppLogger.e("x=" + x + ",y=" + y + ",distanceX=" + distanceX + ",distanceY=" + distanceY);
                 if (distanceY > distanceX * 2.0f && distanceY > mMinDistance) {
                     return (mState == CalendarState.OPEN && y < mDownPosition[1] && checkDragViewCanScrollUp()) || (mState == CalendarState.CLOSE && y > mDownPosition[1] && checkDragViewCanScrollDown());
                 }
@@ -370,7 +364,7 @@ public class MyCalendaryView extends LinearLayout {
 
         float scrollY = dragViewScrollY / (mCurrentRowsIsSix ? 5.0f : 4.0f);
         float canMonthViewScrollY = getMonthViewCanUpScope();
-        float monthViewTransY = monthVP.getY() - Math.min(scrollY * (currentSelectDayRowNum ), canMonthViewScrollY);
+        float monthViewTransY = monthVP.getY() - Math.min(scrollY * (currentSelectDayRowNum), canMonthViewScrollY);
         monthVP.setY(monthViewTransY);
 
     }
@@ -383,7 +377,7 @@ public class MyCalendaryView extends LinearLayout {
 
         float scrollY = dragviewScrollY / (mCurrentRowsIsSix ? 5.0f : 4.0f);
         float canMonthViewScrollY = getMonthViewCanDownScope();
-        float monthViewTransY = monthVP.getY() + Math.min(scrollY * (currentSelectDayRowNum ), canMonthViewScrollY);
+        float monthViewTransY = monthVP.getY() + Math.min(scrollY * (currentSelectDayRowNum), canMonthViewScrollY);
         monthVP.setY(monthViewTransY);
     }
 
@@ -398,7 +392,6 @@ public class MyCalendaryView extends LinearLayout {
     @TargetApi(11)
     public void setState(CalendarState state) {
         this.mState = state;
-        printY();
         if (state == CalendarState.OPEN) {
             weekVP.setVisibility(INVISIBLE);
             llytTag.setVisibility(isShowTag ? VISIBLE : GONE);
@@ -410,7 +403,6 @@ public class MyCalendaryView extends LinearLayout {
             monthVP.setY(compulateMothViewMinTop());
             mDragView.setY(compulateDragViewMinTop());
         }
-        printY();
     }
 
     private float getDragViewCanUpScope() {
@@ -432,12 +424,11 @@ public class MyCalendaryView extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        AppLogger.e("onLayout,monthVP.getHeight()="+monthVP.getHeight()+",weekVP.getHeight()="+weekVP.getHeight()+",frame.height="+mDayFrameLayout.getHeight());
         setState(mState);
     }
 
     private int compulateMothViewMinTop() {
-        return -rowHegiht * (currentSelectDayRowNum );
+        return -rowHegiht * (currentSelectDayRowNum);
     }
 
     private int compulateMothViewMaxTop() {
@@ -449,8 +440,7 @@ public class MyCalendaryView extends LinearLayout {
     }
 
     private int compulateDragViewMaxTop() {
-//        return mDayFrameLayout.getTop() + monthVP.getHeight();
-        return mDayFrameLayout.getTop() + rowHegiht*(mCurrentRowsIsSix?6:5);
+        return mDayFrameLayout.getTop() + rowHegiht * (mCurrentRowsIsSix ? 6 : 5);
     }
 
     private boolean checkDragViewCanScrollUp() {
@@ -536,6 +526,7 @@ public class MyCalendaryView extends LinearLayout {
         }
     }
 
+
     private void autoScrollWhenRowNumChange() {
         int rows = CalendaryUtil.getMonthRows(selectedDate.getYear(), selectedDate.getMonthOfYear());
         if (mState == CalendarState.OPEN) {
@@ -551,4 +542,5 @@ public class MyCalendaryView extends LinearLayout {
         }
         mCurrentRowsIsSix = (rows == 6);
     }
+
 }

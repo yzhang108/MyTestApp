@@ -19,25 +19,23 @@ public class MonthDayRVAdapter extends TextRVAdapter {
         super(context, dateShowDatas, date, dateClick);
     }
 
-    public void changeSelectedDate(int day){
-        if(dateShowDatas!=null && dateShowDatas.size()>=28){
+    public void changeSelectedDate(int day) {
+        if (dateShowDatas != null && dateShowDatas.size() >= 28) {
             //获取一个中间日期，来确定该月是哪个月
-            DateShowData dateShowData=dateShowDatas.get(dateShowDatas.size()/2);
-            int month=dateShowData.date.getMonthOfYear();
-            int year=dateShowData.date.getYear();
-            int days=CalendaryUtil.getMonthDays(year,month);
-            LocalDate newDate=null;
-            if(day<=days){
-                newDate=new LocalDate(year,month,day);
-            }else{
-                newDate=new LocalDate(year,month,days);
+            DateShowData dateShowData = dateShowDatas.get(dateShowDatas.size() / 2);
+            int month = dateShowData.date.getMonthOfYear();
+            int year = dateShowData.date.getYear();
+            int days = CalendaryUtil.getMonthDays(year, month);
+            LocalDate newDate = null;
+            if (day <= days) {
+                newDate = new LocalDate(year, month, day);
+            } else {
+                newDate = new LocalDate(year, month, days);
             }
-            if(newDate.isEqual(mSelectedDate))
+            if (newDate.isEqual(mSelectedDate))
                 return;
-            mSelectedDate=newDate;
-            notifyDataSetChanged();
+            mSelectedDate = newDate;
         }
-//        AppLogger.e("mSelectedDate="+mSelectedDate.toString("yyyy-MM-dd"));
 
     }
 }

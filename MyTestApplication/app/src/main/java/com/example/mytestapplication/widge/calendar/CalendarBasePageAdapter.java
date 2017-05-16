@@ -6,15 +6,13 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mytestapplication.utils.AppLogger;
-
 import org.joda.time.LocalDate;
 
 /**
  * Created by 张艳 on 2017/5/12.
  */
 
-public class CalendarBasePageAdapter extends PagerAdapter{
+public class CalendarBasePageAdapter extends PagerAdapter {
     protected SparseArray<RecyclerView> monthViews = new SparseArray<>();
     protected SparseArray<TextRVAdapter> monthAdapter = new SparseArray<>();
     public final static int ITEM_COUNT = 3;
@@ -22,13 +20,13 @@ public class CalendarBasePageAdapter extends PagerAdapter{
     protected LocalDate mStartTime;
     protected int startPos = 0;
     protected OnCalendarClickListener onCalendarClickListener;
-    private final static int PAGE_COUNT=5000;
+    private final static int PAGE_COUNT = 5000;
 
-    public CalendarBasePageAdapter(int viewHeight, LocalDate mStartTime,OnCalendarClickListener listener) {
+    public CalendarBasePageAdapter(int viewHeight, LocalDate mStartTime, OnCalendarClickListener listener) {
         this.mViewHeight = viewHeight;
         this.mStartTime = mStartTime;
         startPos = PAGE_COUNT / 2;
-        this.onCalendarClickListener=listener;
+        this.onCalendarClickListener = listener;
     }
 
     @Override
@@ -57,7 +55,6 @@ public class CalendarBasePageAdapter extends PagerAdapter{
 
     public LocalDate getShowDate(int position) {
         int pos = compulatePosition(position);
-        AppLogger.e("monthAdapter.get(pos)="+monthAdapter.get(pos));
         if (monthAdapter.get(pos) != null) {
             return monthAdapter.get(pos).getSelectedDate();
         }
@@ -71,23 +68,19 @@ public class CalendarBasePageAdapter extends PagerAdapter{
 
     /**
      * 根据当前选定的时间，改变startTime
+     *
      * @param selectedDate
      */
-    public void changeStartDate(LocalDate selectedDate){
+    public void changeStartDate(LocalDate selectedDate) {
 
     }
 
-    public void notifyCurrentItem(int position){
+    public void notifyCurrentItem(int position) {
         int pos = compulatePosition(position);
         if (monthAdapter.get(pos) != null) {
             monthAdapter.get(pos).notifyDataSetChanged();
         }
     }
 
-    @Override
-    public int getItemPosition(Object object) {
-//        return POSITION_NONE;
-        AppLogger.e("super.getItemPosition(object)="+super.getItemPosition(object));
-        return super.getItemPosition(object);
-    }
+
 }

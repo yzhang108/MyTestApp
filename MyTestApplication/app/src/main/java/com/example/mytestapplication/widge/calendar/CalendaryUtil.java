@@ -34,8 +34,6 @@ public enum CalendaryUtil {
         //得到第一天
         dateTime = dateTime.plusDays(1 - firstDayPos);
         for (int i = 0; i < monthRows * ONE_WEEK_DAYS; i++) {
-//            String showTime=dateTime.toString("yyyy年MM月dd日", Locale.CHINESE);
-//            AppLogger.e("showTime=="+showTime);
             DateShowData dateShowData = new DateShowData();
             dateShowData.date = dateTime;
 
@@ -122,13 +120,10 @@ public enum CalendaryUtil {
      * @return
      */
     public static int getWeeksAgo(LocalDate lastDay, LocalDate newDay) {
-//        AppLogger.e("lastday="+lastDay.toString("yyyy-MM-dd")+",newDay="+newDay.toString("yyyy-MM-dd"));
         LocalDate fromDay = getFirstDayOfWeek(lastDay);
         LocalDate toDay = getFirstDayOfWeek(newDay);
-//        AppLogger.e("fromDay="+fromDay.toString("yyyy-MM-dd")+",toDay="+toDay.toString("yyyy-MM-dd"));
         Period p = new Period(fromDay, toDay, PeriodType.days());
         int days = p.getDays();
-//        AppLogger.e("days="+days);
         return days / 7;
     }
 
@@ -139,15 +134,6 @@ public enum CalendaryUtil {
         }
         return localDate.plusDays(1 - dayOfWeek);
     }
-
-//    /**
-//     * 获得两个日期距离几个月
-//     *
-//     * @return
-//     */
-//    public static int getMonthsAgo(int lastYear, int lastMonth, int year, int month) {
-//        return (year - lastYear) * 12 + (month - lastMonth);
-//    }
     /**
      * 获得两个日期距离几个月
      *
@@ -171,4 +157,5 @@ public enum CalendaryUtil {
         int size = getFirstDayWeek(year, month) + getMonthDays(year, month) - 1;
         return size % 7 == 0 ? size / 7 : (size / 7) + 1;
     }
+
 }
