@@ -2,6 +2,7 @@ package com.example.mytestapplication.widge.calendar;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -261,6 +262,9 @@ public class MyCalendaryView extends LinearLayout {
         int weekbarHeight = getChildAt(1).getLayoutParams().height;
         TOP_MIN = selectTimeHeight + weekbarHeight;
         mDragView = getChildAt(childCount - 1);
+        if(mDragView.getBackground()==null){
+            mDragView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
         setViewHeight(mDragView, height - TOP_MIN - rowHegiht);
         setViewHeight(this, height);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
