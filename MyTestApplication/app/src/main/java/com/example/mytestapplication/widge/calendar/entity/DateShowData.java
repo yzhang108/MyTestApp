@@ -1,4 +1,4 @@
-package com.example.mytestapplication.widge.calendar;
+package com.example.mytestapplication.widge.calendar.entity;
 
 import org.joda.time.LocalDate;
 

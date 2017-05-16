@@ -1,4 +1,4 @@
-package com.example.mytestapplication.widge.calendar;
+package com.example.mytestapplication.widge.calendar.animation;
 
 import android.annotation.TargetApi;
 import android.view.View;

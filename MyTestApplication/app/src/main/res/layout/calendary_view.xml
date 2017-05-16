@@ -4,7 +4,8 @@
     <RelativeLayout
         android:id="@+id/rl_selected_time"
         android:layout_width="match_parent"
-        android:layout_height="30dp">
+        android:layout_height="30dp"
+        android:background="@android:color/white">
 
         <TextView
             android:id="@+id/tv_year_and_month_text"
@@ -29,7 +30,8 @@
         android:id="@+id/recycler_week_text"
         android:layout_width="match_parent"
         android:layout_height="@dimen/calendary_row_1_height"
-        android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
+        android:overScrollMode="never"
+        android:background="@android:color/white"></android.support.v7.widget.RecyclerView>
 
     <FrameLayout
         android:id="@+id/frame_days"
@@ -52,8 +54,9 @@
     <LinearLayout
         android:id="@+id/llyt_tag"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/calendary_row_1_height"
+        android:orientation="horizontal"
+        android:background="@android:color/white">
 
         <TextView
             android:layout_width="0dp"

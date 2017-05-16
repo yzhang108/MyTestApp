@@ -1,9 +1,13 @@
-package com.example.mytestapplication.widge.calendar;
+package com.example.mytestapplication.widge.calendar.adapter;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+
+import com.example.mytestapplication.widge.calendar.CalendaryUtil;
+import com.example.mytestapplication.widge.calendar.listener.OnDayClickListener;
+import com.example.mytestapplication.widge.calendar.entity.DateShowData;
 
 import org.joda.time.LocalDate;
 
@@ -15,8 +19,8 @@ import static com.example.mytestapplication.widge.calendar.CalendaryUtil.ONE_WEE
  * Created by 张艳 on 2017/5/8.
  */
 
-public class WeekPageAdapter extends CalendarBasePageAdapter {
-    public WeekPageAdapter(int viewHeight, LocalDate initDate, OnCalendarClickListener listener) {
+public class WeekPageAdapter extends BasePageAdapter {
+    public WeekPageAdapter(int viewHeight, LocalDate initDate, OnDayClickListener listener) {
         super(viewHeight, initDate, listener);
     }
 
@@ -30,12 +34,12 @@ public class WeekPageAdapter extends CalendarBasePageAdapter {
             RecyclerView recyclerView = new RecyclerView(container.getContext());
             recyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mViewHeight));
             recyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), ONE_WEEK_DAYS));
-            WeekDayRVAdapter textRVAdapter = new WeekDayRVAdapter(recyclerView.getContext(), dateShowDatas, desTime, onCalendarClickListener);
+            WeekDayAdapter textRVAdapter = new WeekDayAdapter(recyclerView.getContext(), dateShowDatas, desTime, onCalendarClickListener);
             recyclerView.setAdapter(textRVAdapter);
             monthViews.put(pos, recyclerView);
             monthAdapter.put(pos, textRVAdapter);
         } else {
-            WeekDayRVAdapter textRVAdapter = (WeekDayRVAdapter) monthAdapter.get(pos);
+            WeekDayAdapter textRVAdapter = (WeekDayAdapter) monthAdapter.get(pos);
             textRVAdapter.updateData(dateShowDatas, desTime);
             RecyclerView recyclerView = monthViews.get(pos);
             ViewParent parent = recyclerView.getParent();
@@ -60,7 +64,7 @@ public class WeekPageAdapter extends CalendarBasePageAdapter {
         }
         mStartTime = mStartTime.plusDays(week - startWeek);
         for (int i = 0; i < monthAdapter.size(); i++) {
-            ((WeekDayRVAdapter) monthAdapter.get(i)).changeSelectedDate(week);
+            ((WeekDayAdapter) monthAdapter.get(i)).changeSelectedDate(week);
         }
     }
 }

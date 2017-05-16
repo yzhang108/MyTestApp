@@ -1,6 +1,9 @@
-package com.example.mytestapplication.widge.calendar;
+package com.example.mytestapplication.widge.calendar.adapter;
 
 import android.content.Context;
+
+import com.example.mytestapplication.widge.calendar.listener.OnDayClickListener;
+import com.example.mytestapplication.widge.calendar.entity.DateShowData;
 
 import org.joda.time.LocalDate;
 
@@ -10,12 +13,12 @@ import java.util.List;
  * Created by 张艳 on 2017/5/15.
  */
 
-public class WeekDayRVAdapter extends TextRVAdapter {
-    public WeekDayRVAdapter(Context context, List<DateShowData> dateShowDatas) {
+public class WeekDayAdapter extends BaseDayAdapter {
+    public WeekDayAdapter(Context context, List<DateShowData> dateShowDatas) {
         super(context, dateShowDatas);
     }
 
-    public WeekDayRVAdapter(Context context, List<DateShowData> dateShowDatas, LocalDate date, OnCalendarClickListener dateClick) {
+    public WeekDayAdapter(Context context, List<DateShowData> dateShowDatas, LocalDate date, OnDayClickListener dateClick) {
         super(context, dateShowDatas, date, dateClick);
     }
 

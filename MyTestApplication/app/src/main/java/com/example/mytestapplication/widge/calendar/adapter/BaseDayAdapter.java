@@ -1,4 +1,4 @@
-package com.example.mytestapplication.widge.calendar;
+package com.example.mytestapplication.widge.calendar.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.example.mytestapplication.R;
 import com.example.mytestapplication.utils.AppLogger;
+import com.example.mytestapplication.widge.calendar.listener.OnDayClickListener;
+import com.example.mytestapplication.widge.calendar.entity.DateShowData;
 
 import org.joda.time.LocalDate;
 
@@ -20,22 +22,22 @@ import java.util.List;
  * Created by 张艳 on 2017/5/8.
  */
 
-public class TextRVAdapter extends RecyclerView.Adapter {
+public class BaseDayAdapter extends RecyclerView.Adapter {
     protected Context context;
     protected List<DateShowData> dateShowDatas = new ArrayList<>();
     protected LocalDate mSelectedDate;
-    protected OnCalendarClickListener onDateClick;
+    protected OnDayClickListener onDateClick;
     protected int colorNormal, colorSelected;
 
 
-    public TextRVAdapter(Context context, List<DateShowData> dateShowDatas) {
+    public BaseDayAdapter(Context context, List<DateShowData> dateShowDatas) {
         this.context = context;
         this.dateShowDatas = dateShowDatas;
         colorNormal = ContextCompat.getColor(context, R.color.black);
         colorSelected = ContextCompat.getColor(context, R.color.red_light);
     }
 
-    public TextRVAdapter(Context context, List<DateShowData> dateShowDatas, LocalDate date, OnCalendarClickListener dateClick) {
+    public BaseDayAdapter(Context context, List<DateShowData> dateShowDatas, LocalDate date, OnDayClickListener dateClick) {
         this.context = context;
         this.dateShowDatas = dateShowDatas;
         this.mSelectedDate = date;

@@ -1,4 +1,4 @@
-package com.example.mytestapplication.widge.calendar;
+package com.example.mytestapplication.widge.calendar.adapter;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
@@ -6,23 +6,25 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mytestapplication.widge.calendar.listener.OnDayClickListener;
+
 import org.joda.time.LocalDate;
 
 /**
  * Created by 张艳 on 2017/5/12.
  */
 
-public class CalendarBasePageAdapter extends PagerAdapter {
+public class BasePageAdapter extends PagerAdapter {
     protected SparseArray<RecyclerView> monthViews = new SparseArray<>();
-    protected SparseArray<TextRVAdapter> monthAdapter = new SparseArray<>();
+    protected SparseArray<BaseDayAdapter> monthAdapter = new SparseArray<>();
     public final static int ITEM_COUNT = 3;
     protected int mViewHeight;
     protected LocalDate mStartTime;
     protected int startPos = 0;
-    protected OnCalendarClickListener onCalendarClickListener;
+    protected OnDayClickListener onCalendarClickListener;
     private final static int PAGE_COUNT = 5000;
 
-    public CalendarBasePageAdapter(int viewHeight, LocalDate mStartTime, OnCalendarClickListener listener) {
+    public BasePageAdapter(int viewHeight, LocalDate mStartTime, OnDayClickListener listener) {
         this.mViewHeight = viewHeight;
         this.mStartTime = mStartTime;
         startPos = PAGE_COUNT / 2;

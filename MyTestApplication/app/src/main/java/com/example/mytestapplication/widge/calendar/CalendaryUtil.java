@@ -1,5 +1,7 @@
 package com.example.mytestapplication.widge.calendar;
 
+import com.example.mytestapplication.widge.calendar.entity.DateShowData;
+
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -60,7 +62,7 @@ public enum CalendaryUtil {
         for (int i = 0; i < 7; i++) {
             DateShowData dateShowData = new DateShowData();
             dateShowData.date = localDate;
-            dateShowData.text = localDate.toString("dd");
+            dateShowData.text = localDate.getDayOfMonth()+"";
             dateShowDatas.add(dateShowData);
             localDate = localDate.plusDays(1);
         }
