@@ -3,7 +3,6 @@ package com.example.mytestapplication.widge.calendar.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
@@ -346,12 +345,6 @@ public class MyCalendaryView extends LinearLayout {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void printY() {
-//        float frameVPY = mCalendarView.getY();
-//        AppLogger.e("monthView.getY()=" + monthView.getY() + ",frameVPY=" + frameVPY + ",mdragviewY=" + mDragView.getY());
-    }
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getActionMasked()) {
@@ -409,7 +402,7 @@ public class MyCalendaryView extends LinearLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mIsScrolling)
             return true;
-        if (mState == CalendarState.WEEK && canViewScrollUp(mDragView))
+        if (mState == CalendarState.WEEK && canChildScrollUp(mDragView))
             return false;
         switch (ev.getActionMasked()) {
             case ACTION_MOVE:
@@ -425,21 +418,6 @@ public class MyCalendaryView extends LinearLayout {
         return super.onInterceptTouchEvent(ev);
     }
 
-    public static boolean canViewScrollUp(View view) {
-        if (view == null)
-            return false;
-        if (view instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup) view;
-            int childCount = group.getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                if (canChildScrollUp(view))
-                    return true;
-            }
-            return false;
-        }
-        return canChildScrollUp(view);
-    }
-
     private static boolean canChildScrollUp(View view) {
         // 如果当前版本小于 14，那就得自己背锅
         if (android.os.Build.VERSION.SDK_INT < 14) {
@@ -453,7 +431,7 @@ public class MyCalendaryView extends LinearLayout {
                 return view.getScrollY() > 0;
             }
         } else {
-            return ((ViewGroup) view).canScrollVertically(-1);
+            return view.canScrollVertically(-1);
         }
     }
 
@@ -466,7 +444,6 @@ public class MyCalendaryView extends LinearLayout {
     }
 
     private void drawUp(float distanceY) {
-        printY();
         float dragViewScrollY = Math.min(Math.abs(distanceY), mAutoScrollDistance);
         float canDragViewScrollY = getDragViewCanUpScope();
         float dragViewTransY = mDragView.getY() - Math.min(dragViewScrollY, canDragViewScrollY);

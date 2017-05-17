@@ -18,20 +18,20 @@
         android:orientation="vertical">
 
 
-        <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-        <!--<FrameLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rl_content"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
-        <!--</FrameLayout>-->
-        <!--</ScrollView>-->
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rl_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            </FrameLayout>
+        </ScrollView>
 
     </com.example.mytestapplication.widge.calendar.view.MyCalendaryView>
 </LinearLayout>
