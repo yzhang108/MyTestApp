@@ -24,7 +24,7 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         myCalendaryView = (MyCalendaryView) findViewById(R.id.mycalendar);
-        myCalendaryView.setViewState(CalendarState.MONTH);
+        myCalendaryView.setViewState(CalendarState.WEEK);
         myCalendaryView.setLegendVisible(false);
 
         recyclerView = (RecyclerView) findViewById(R.id.rl_content);

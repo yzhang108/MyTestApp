@@ -67,7 +67,7 @@ public class MyCalendaryView extends LinearLayout {
     private int currentSelectDayRowNum = 1;
     private boolean mStartChangeMonth = false;
     private int startScrollMonthPosition = 0;
-    private int currentMonthPosition=0;
+    private int currentMonthPosition = 0;
 
     private LocalDate initDate;//初始化时系统默认选中的时间,是整个时间计算的参照物，相当于坐标元点
     private LocalDate selectedDate;
@@ -98,12 +98,12 @@ public class MyCalendaryView extends LinearLayout {
         mAutoScrollDistance = getResources().getDimensionPixelSize(R.dimen.auto_scroll_distance);
         setLegendVisible(true);
 
-        initDate = new LocalDate(2017,5,31);
+        initDate = new LocalDate(2017, 5, 31);
         setSelectedDate(initDate);
-        LocalDate lastDate=initDate.minusMonths(1);
-        LocalDate nextData=initDate.plusMonths(1);
-        mLastMonthRows=CalendaryUtil.getMonthRows(lastDate.getYear(),lastDate.getMonthOfYear());
-        mNextMonthRows=CalendaryUtil.getMonthRows(nextData.getYear(),nextData.getMonthOfYear());
+        LocalDate lastDate = initDate.minusMonths(1);
+        LocalDate nextData = initDate.plusMonths(1);
+        mLastMonthRows = CalendaryUtil.getMonthRows(lastDate.getYear(), lastDate.getMonthOfYear());
+        mNextMonthRows = CalendaryUtil.getMonthRows(nextData.getYear(), nextData.getMonthOfYear());
         mCurrMonthRows = CalendaryUtil.getMonthRows(selectedDate.getYear(), selectedDate.getMonthOfYear());
 
         initListener();
@@ -250,7 +250,7 @@ public class MyCalendaryView extends LinearLayout {
 
             @Override
             public void onPageSelected(int position) {
-                currentMonthPosition=position;
+                currentMonthPosition = position;
                 monthPageAdapter.notifyCurrentItem(position);
                 LocalDate date = monthPageAdapter.getShowDate(position);
                 if (date != null) {
@@ -274,9 +274,9 @@ public class MyCalendaryView extends LinearLayout {
                         break;
                     case 2:
                         //切换页面了
-                        if(!mStartChangeMonth){
-                            startScrollMonthPosition=currentMonthPosition;
-                            mStartChangeMonth=true;
+                        if (!mStartChangeMonth) {
+                            startScrollMonthPosition = currentMonthPosition;
+                            mStartChangeMonth = true;
                         }
                         break;
                     case 0:
@@ -358,6 +358,12 @@ public class MyCalendaryView extends LinearLayout {
             case ACTION_DOWN:
                 mDownPosition[0] = ev.getRawX();
                 mDownPosition[1] = ev.getRawY();
+                if (mState == CalendarState.WEEK && !isViewUnderPosition(mDragView, mDownPosition[0], mDownPosition[1])) {
+                    return false;
+                } else if (mState == CalendarState.MONTH) {
+                    if (!(isViewUnderPosition(monthView, mDownPosition[0], mDownPosition[1]) || isViewUnderPosition(mDragView, mDownPosition[0], mDownPosition[1])))
+                        return false;
+                }
                 break;
         }
 
@@ -370,7 +376,6 @@ public class MyCalendaryView extends LinearLayout {
             case ACTION_DOWN:
                 mDownPosition[0] = event.getRawX();
                 mDownPosition[1] = event.getRawY();
-
                 return true;
             case ACTION_MOVE:
                 if (!mIsScrolling) {
@@ -404,9 +409,8 @@ public class MyCalendaryView extends LinearLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mIsScrolling)
             return true;
-        if (mState == CalendarState.WEEK && canChildScrollUp(mDragView)) {
+        if (mState == CalendarState.WEEK && canViewScrollUp(mDragView))
             return false;
-        }
         switch (ev.getActionMasked()) {
             case ACTION_MOVE:
                 float x = ev.getRawX();
@@ -421,7 +425,22 @@ public class MyCalendaryView extends LinearLayout {
         return super.onInterceptTouchEvent(ev);
     }
 
-    public static boolean canChildScrollUp(View view) {
+    public static boolean canViewScrollUp(View view) {
+        if (view == null)
+            return false;
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            int childCount = group.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                if (canChildScrollUp(view))
+                    return true;
+            }
+            return false;
+        }
+        return canChildScrollUp(view);
+    }
+
+    private static boolean canChildScrollUp(View view) {
         // 如果当前版本小于 14，那就得自己背锅
         if (android.os.Build.VERSION.SDK_INT < 14) {
             // 这里给出了如果当前 view 是 AbsListView 的实例的检测方法
@@ -434,7 +453,7 @@ public class MyCalendaryView extends LinearLayout {
                 return view.getScrollY() > 0;
             }
         } else {
-            return view.canScrollVertically(-1);
+            return ((ViewGroup) view).canScrollVertically(-1);
         }
     }
 
@@ -630,6 +649,21 @@ public class MyCalendaryView extends LinearLayout {
         }
     }
 
+    private boolean isViewUnderPosition(View view, float x, float y) {
+//        AppLogger.e("x=" + x + ",y=" + y);
+        if (view == null) return false;
+        int[] viewLocation = new int[2];
+        view.getLocationOnScreen(viewLocation);
+//        AppLogger.e("viewLocation.x=" + viewLocation[0] + ",viewLocation.y=" + viewLocation[1]);
+        int[] parentLocation = new int[2];
+        this.getLocationOnScreen(parentLocation);
+//        AppLogger.e("parentLocation.x=" + parentLocation[0] + ",parentLocation.y=" + parentLocation[1]);
+        float screenX = parentLocation[0] + x;
+        float screenY = parentLocation[1] + y;
+//        AppLogger.e("screenX=" + screenX + ",screenY=" + screenY);
+        return screenX >= viewLocation[0] && screenX < viewLocation[0] + view.getWidth() &&
+                screenY >= viewLocation[1] && screenY < viewLocation[1] + view.getHeight();
+    }
 
     /**
      * 是否显示图例
@@ -644,5 +678,6 @@ public class MyCalendaryView extends LinearLayout {
     public void setViewState(CalendarState state) {
         setState(state);
     }
+
 
 }
