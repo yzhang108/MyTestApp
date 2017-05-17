@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,7 +24,6 @@ import com.example.mytestapplication.widge.calendar.CalendaryUtil;
 import com.example.mytestapplication.widge.calendar.adapter.BaseDayAdapter;
 import com.example.mytestapplication.widge.calendar.adapter.MonthPageAdapter;
 import com.example.mytestapplication.widge.calendar.adapter.WeekPageAdapter;
-import com.example.mytestapplication.widge.calendar.animation.AutoMoveAnimation;
 import com.example.mytestapplication.widge.calendar.animation.CalendarViewMoveAnimation;
 import com.example.mytestapplication.widge.calendar.entity.CalendarState;
 import com.example.mytestapplication.widge.calendar.listener.OnDayClickListener;
@@ -61,8 +61,13 @@ public class MyCalendaryView extends LinearLayout {
     private CalendarState mState = CalendarState.MONTH;
     private boolean isLegendVisible = false;
     private int mAutoScrollDistance;
-    private boolean mCurrentRowsIsSix = false;
+    private int mCurrMonthRows = 6;
+    private int mLastMonthRows = 0;
+    private int mNextMonthRows = 0;
     private int currentSelectDayRowNum = 1;
+    private boolean mStartChangeMonth = false;
+    private int startScrollMonthPosition = 0;
+    private int currentMonthPosition=0;
 
     private LocalDate initDate;//初始化时系统默认选中的时间,是整个时间计算的参照物，相当于坐标元点
     private LocalDate selectedDate;
@@ -93,9 +98,13 @@ public class MyCalendaryView extends LinearLayout {
         mAutoScrollDistance = getResources().getDimensionPixelSize(R.dimen.auto_scroll_distance);
         setLegendVisible(true);
 
-        initDate = new LocalDate(2017, 5, 31);
+        initDate = new LocalDate(2017,5,31);
         setSelectedDate(initDate);
-        mCurrentRowsIsSix = CalendaryUtil.getMonthRows(selectedDate.getYear(), selectedDate.getMonthOfYear()) == 6;
+        LocalDate lastDate=initDate.minusMonths(1);
+        LocalDate nextData=initDate.plusMonths(1);
+        mLastMonthRows=CalendaryUtil.getMonthRows(lastDate.getYear(),lastDate.getMonthOfYear());
+        mNextMonthRows=CalendaryUtil.getMonthRows(nextData.getYear(),nextData.getMonthOfYear());
+        mCurrMonthRows = CalendaryUtil.getMonthRows(selectedDate.getYear(), selectedDate.getMonthOfYear());
 
         initListener();
         initData();
@@ -181,6 +190,7 @@ public class MyCalendaryView extends LinearLayout {
         };
     }
 
+
     /**
      * 初始化折叠后的一周日期
      */
@@ -199,17 +209,14 @@ public class MyCalendaryView extends LinearLayout {
                 LocalDate date = weekPageAdapter.getShowDate(position);
                 if (date != null) {
                     if (date.isEqual(selectedDate)) {
-                        autoScrollWhenRowNumChange();
                         return;
                     }
                     setSelectedDate(date);
-                    autoScrollWhenRowNumChange();
                 }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
         weekView.setCurrentItem(weekPageAdapter.getStartPos(), false);
@@ -224,29 +231,86 @@ public class MyCalendaryView extends LinearLayout {
         monthView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                if (mStartChangeMonth) {
+                    if (position == startScrollMonthPosition) {
+                        //判断下个月
+                        if (mNextMonthRows != mCurrMonthRows) {
+                            float moveY = (mNextMonthRows - mCurrMonthRows) * rowHegiht * positionOffset;
+                            mDragView.setY(compulateDragViewMaxTop() + moveY);
+                        }
+                    } else if (position < startScrollMonthPosition) {
+                        //判断上个月
+                        if (mCurrMonthRows != mLastMonthRows) {
+                            float moveY = (mLastMonthRows - mCurrMonthRows) * rowHegiht * (1 - positionOffset);
+                            mDragView.setY(compulateDragViewMaxTop() + moveY);
+                        }
+                    }
+                }
             }
 
             @Override
             public void onPageSelected(int position) {
+                currentMonthPosition=position;
                 monthPageAdapter.notifyCurrentItem(position);
                 LocalDate date = monthPageAdapter.getShowDate(position);
                 if (date != null) {
                     if (date.isEqual(selectedDate)) {
-                        autoScrollWhenRowNumChange();
                         return;
                     }
                     setSelectedDate(date);
-                    autoScrollWhenRowNumChange();
                 }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                switch (state) {
+                    case 1:
+                        //开始滑动
+                        startScrollMonthPosition = monthView.getCurrentItem();
+                        initMonthRows();
+                        if (mCurrMonthRows == mLastMonthRows && mCurrMonthRows == mNextMonthRows)
+                            mStartChangeMonth = false;
+                        mStartChangeMonth = true;
+                        break;
+                    case 2:
+                        //切换页面了
+                        if(!mStartChangeMonth){
+                            startScrollMonthPosition=currentMonthPosition;
+                            mStartChangeMonth=true;
+                        }
+                        break;
+                    case 0:
+                        //滑动结束
+                        if (mStartChangeMonth) {
+                            if (monthView.getCurrentItem() != startScrollMonthPosition) {
+                                //说明确实切换页面了，移动到最终位置
+                                if (monthView.getCurrentItem() > startScrollMonthPosition) {
+                                    float moveY = (mNextMonthRows - mCurrMonthRows) * rowHegiht * 1;
+                                    mDragView.setY(compulateDragViewMaxTop() + moveY);
+                                } else {
+                                    float moveY = (mLastMonthRows - mCurrMonthRows) * rowHegiht * 1;
+                                    mDragView.setY(compulateDragViewMaxTop() + moveY);
+                                }
+                            } else {
+                                mDragView.setY(compulateDragViewMaxTop());
+                            }
+                        }
+                        mStartChangeMonth = false;
+                        initMonthRows();
+                        break;
+                }
             }
         });
         monthView.setCurrentItem(monthPageAdapter.getStartPos(), false);
+    }
+
+    private void initMonthRows() {
+        LocalDate curDate = monthPageAdapter.getShowDate(monthView.getCurrentItem());
+        LocalDate lastDate = monthPageAdapter.getShowDate(monthView.getCurrentItem() - 1);
+        LocalDate nextDate = monthPageAdapter.getShowDate(monthView.getCurrentItem() + 1);
+        mCurrMonthRows = CalendaryUtil.getMonthRows(curDate.getYear(), curDate.getMonthOfYear());
+        mLastMonthRows = CalendaryUtil.getMonthRows(lastDate.getYear(), lastDate.getMonthOfYear());
+        mNextMonthRows = CalendaryUtil.getMonthRows(nextDate.getYear(), nextDate.getMonthOfYear());
     }
 
 
@@ -294,9 +358,9 @@ public class MyCalendaryView extends LinearLayout {
             case ACTION_DOWN:
                 mDownPosition[0] = ev.getRawX();
                 mDownPosition[1] = ev.getRawY();
-//                AppLogger.i("mDownPosition[0]=" + mDownPosition[0] + ",mDownPosition[1]=" + mDownPosition[1]);
                 break;
         }
+
         return super.dispatchTouchEvent(ev);
     }
 
@@ -314,6 +378,7 @@ public class MyCalendaryView extends LinearLayout {
                         refreshWeekViewWidthSelectedDate();
                     } else {
                         refreshMonthViewWidthSelectedDate();
+                        initMonthRows();
                     }
                 }
                 mIsScrolling = true;
@@ -339,9 +404,11 @@ public class MyCalendaryView extends LinearLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mIsScrolling)
             return true;
+        if (mState == CalendarState.WEEK && canChildScrollUp(mDragView)) {
+            return false;
+        }
         switch (ev.getActionMasked()) {
             case ACTION_MOVE:
-//                AppLogger.e("这里是判断结束条件吧,即判断是否终止事件传递");
                 float x = ev.getRawX();
                 float y = ev.getRawY();
                 float distanceX = Math.abs(x - mDownPosition[0]);
@@ -352,6 +419,23 @@ public class MyCalendaryView extends LinearLayout {
                 break;
         }
         return super.onInterceptTouchEvent(ev);
+    }
+
+    public static boolean canChildScrollUp(View view) {
+        // 如果当前版本小于 14，那就得自己背锅
+        if (android.os.Build.VERSION.SDK_INT < 14) {
+            // 这里给出了如果当前 view 是 AbsListView 的实例的检测方法
+            if (view instanceof AbsListView) {
+                final AbsListView absListView = (AbsListView) view;
+                return absListView.getChildCount() > 0
+                        && (absListView.getFirstVisiblePosition() > 0 || absListView.getChildAt(0)
+                        .getTop() < absListView.getPaddingTop());
+            } else {
+                return view.getScrollY() > 0;
+            }
+        } else {
+            return view.canScrollVertically(-1);
+        }
     }
 
     public void dragView(float distance) {
@@ -369,7 +453,7 @@ public class MyCalendaryView extends LinearLayout {
         float dragViewTransY = mDragView.getY() - Math.min(dragViewScrollY, canDragViewScrollY);
         mDragView.setY(dragViewTransY);
 
-        float scrollY = dragViewScrollY / (mCurrentRowsIsSix ? 5.0f : 4.0f);
+        float scrollY = dragViewScrollY / (float) (mCurrMonthRows - 1);
         float canMonthViewScrollY = getMonthViewCanUpScope();
         float monthViewTransY = monthView.getY() - Math.min(scrollY * (currentSelectDayRowNum), canMonthViewScrollY);
         monthView.setY(monthViewTransY);
@@ -384,7 +468,7 @@ public class MyCalendaryView extends LinearLayout {
         float transY = mDragView.getY() + Math.min(dragviewScrollY, canScrollY);
         mDragView.setY(transY);
 
-        float scrollY = dragviewScrollY / (mCurrentRowsIsSix ? 5.0f : 4.0f);
+        float scrollY = dragviewScrollY / (float) (mCurrMonthRows - 1);
         float canMonthViewScrollY = getMonthViewCanDownScope();
         float monthViewTransY = monthView.getY() + Math.min(scrollY * (currentSelectDayRowNum), canMonthViewScrollY);
         monthView.setY(monthViewTransY);
@@ -455,12 +539,12 @@ public class MyCalendaryView extends LinearLayout {
     }
 
     private int compulateDragViewMaxTop() {
-        return mCalendarView.getTop() + rowHegiht * (mCurrentRowsIsSix ? 6 : 5) + (isLegendVisible ? legendView.getHeight() : 0);
+        return mCalendarView.getTop() + rowHegiht * mCurrMonthRows + (isLegendVisible ? legendView.getHeight() : 0);
     }
 
 
     private int compulateLegendViewTop() {
-        return mCalendarView.getTop() + rowHegiht * (mCurrentRowsIsSix ? 6 : 5);
+        return mCalendarView.getTop() + rowHegiht * mCurrMonthRows;
     }
 
     private boolean checkDragViewCanScrollUp() {
@@ -546,22 +630,6 @@ public class MyCalendaryView extends LinearLayout {
         }
     }
 
-
-    private void autoScrollWhenRowNumChange() {
-        int rows = CalendaryUtil.getMonthRows(selectedDate.getYear(), selectedDate.getMonthOfYear());
-        if (mState == CalendarState.MONTH) {
-            if (mCurrentRowsIsSix && rows != 6) {
-                //向上滑动
-                AutoMoveAnimation animation = new AutoMoveAnimation(mDragView, -rowHegiht, 200, 1.5f);
-                mDragView.startAnimation(animation);
-            } else if (!mCurrentRowsIsSix && rows != 5) {
-//            向下滑动
-                AutoMoveAnimation animation = new AutoMoveAnimation(mDragView, rowHegiht, 200, 1.5f);
-                mDragView.startAnimation(animation);
-            }
-        }
-        mCurrentRowsIsSix = (rows == 6);
-    }
 
     /**
      * 是否显示图例
